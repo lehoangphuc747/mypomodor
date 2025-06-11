@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import CircularProgress from '@material-ui/core/CircularProgress'
+import CircularProgress from '@mui/material/CircularProgress'
 import { useSelector, useDispatch } from 'react-redux'
 import { setTimeLeft } from '../data/timer/actions'
 import { STATUSES, TYPES } from '../data/timer/reducer'
-import { Typography, useMediaQuery, useTheme } from '@material-ui/core'
-import Box from '@material-ui/core/Box'
+import { Typography, useMediaQuery, useTheme } from '@mui/material'
+import Box from '@mui/material/Box'
 
 export const CountdownCircle = () => {
   const { timeLeft, progress, status, type } = useSelector(

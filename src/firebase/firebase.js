@@ -1,7 +1,7 @@
-import firebase from 'firebase/app'
-import 'firebase/firestore'
-import 'firebase/auth'
-import 'firebase/analytics'
+import { initializeApp } from 'firebase/app'
+import { getFirestore, enablePersistence } from 'firebase/firestore'
+import { getAuth, GoogleAuthProvider } from 'firebase/auth'
+import { getAnalytics } from 'firebase/analytics'
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -14,19 +14,24 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 }
 
-firebase.initializeApp(firebaseConfig)
+const app = initializeApp(firebaseConfig)
 
 if (firebaseConfig.measurementId !== 'test') {
-  firebase.analytics()
+  getAnalytics(app)
 }
 
-firebase
-  .firestore()
-  .enablePersistence({ synchronizeTabs: true })
+const db = getFirestore(app)
+const auth = getAuth(app)
+const googleAuthProvider = new GoogleAuthProvider()
+
+enablePersistence(db, { synchronizeTabs: true })
   // eslint-disable-next-line no-console
   .catch((e) => console.warn(e))
 
-const fs = firebase.firestore()
-const googleAuthProvider = new firebase.auth.GoogleAuthProvider()
+// For backward compatibility
+const firebase = {
+  auth: () => auth,
+  firestore: () => db,
+}
 
-export { firebase, googleAuthProvider, fs as default }
+export { firebase, googleAuthProvider, db as default }

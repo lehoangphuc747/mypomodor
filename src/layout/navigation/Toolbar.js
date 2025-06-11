@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import styled, { css } from 'styled-components'
-import { useMediaQuery } from '@material-ui/core'
-import MatToolbar from '@material-ui/core/Toolbar'
-import Box from '@material-ui/core/Box'
+import { useMediaQuery } from '@mui/material'
+import MatToolbar from '@mui/material/Toolbar'
+import Box from '@mui/material/Box'
 import { SignIn } from './SignIn'
 import { UserAvatar } from './UserAvatar'
-import OfflineIcon from '@material-ui/icons/WifiOff'
+import OfflineIcon from '@mui/icons-material/WifiOff'
 import logo from './assets/logo.svg'
 
 export const Toolbar = () => {

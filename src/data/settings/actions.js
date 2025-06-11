@@ -1,4 +1,4 @@
-import fs from '../../firebase/firebase'
+import { localStorageAPI } from '../../storage/localStorage'
 
 export const setWorkDuration = (duration) => ({
   type: 'SET_WORK_DURATION',
@@ -7,13 +7,13 @@ export const setWorkDuration = (duration) => ({
 
 export const startSetWorkDuration = (duration) => {
   return async (dispatch, getState) => {
-    const uid = getState().auth.uid
-
     dispatch(setWorkDuration(duration))
 
-    await fs
-      .doc(`users/${uid}`)
-      .set({ settings: { workDuration: duration } }, { merge: true })
+    const currentSettings = localStorageAPI.getSettings() || {}
+    await localStorageAPI.saveSettings({
+      ...currentSettings,
+      workDuration: duration
+    })
   }
 }
 
@@ -24,13 +24,13 @@ export const setShortBreakDuration = (duration) => ({
 
 export const startSetShortBreakDuration = (duration) => {
   return async (dispatch, getState) => {
-    const uid = getState().auth.uid
-
     dispatch(setShortBreakDuration(duration))
 
-    await fs
-      .doc(`users/${uid}`)
-      .set({ settings: { shortBreakDuration: duration } }, { merge: true })
+    const currentSettings = localStorageAPI.getSettings() || {}
+    await localStorageAPI.saveSettings({
+      ...currentSettings,
+      shortBreakDuration: duration
+    })
   }
 }
 
@@ -41,13 +41,13 @@ export const setLongBreakDuration = (duration) => ({
 
 export const startSetLongBreakDuration = (duration) => {
   return async (dispatch, getState) => {
-    const uid = getState().auth.uid
-
     dispatch(setLongBreakDuration(duration))
 
-    await fs
-      .doc(`users/${uid}`)
-      .set({ settings: { longBreakDuration: duration } }, { merge: true })
+    const currentSettings = localStorageAPI.getSettings() || {}
+    await localStorageAPI.saveSettings({
+      ...currentSettings,
+      longBreakDuration: duration
+    })
   }
 }
 
@@ -58,11 +58,13 @@ export const setRounds = (rounds) => ({
 
 export const startSetRounds = (rounds) => {
   return async (dispatch, getState) => {
-    const uid = getState().auth.uid
-
     dispatch(setRounds(rounds))
 
-    await fs.doc(`users/${uid}`).set({ settings: { rounds } }, { merge: true })
+    const currentSettings = localStorageAPI.getSettings() || {}
+    await localStorageAPI.saveSettings({
+      ...currentSettings,
+      rounds
+    })
   }
 }
 
@@ -73,13 +75,13 @@ export const setShowTimerInTitle = (showTimerInTitle) => ({
 
 export const startSetShowTimerInTitle = (showTimerInTitle) => {
   return async (dispatch, getState) => {
-    const uid = getState().auth.uid
-
     dispatch(setShowTimerInTitle(showTimerInTitle))
 
-    await fs
-      .doc(`users/${uid}`)
-      .set({ settings: { showTimerInTitle } }, { merge: true })
+    const currentSettings = localStorageAPI.getSettings() || {}
+    await localStorageAPI.saveSettings({
+      ...currentSettings,
+      showTimerInTitle
+    })
   }
 }
 
@@ -90,13 +92,13 @@ export const setShowNotifications = (showNotifications) => ({
 
 export const startSetShowNotifications = (showNotifications) => {
   return async (dispatch, getState) => {
-    const uid = getState().auth.uid
-
     dispatch(setShowNotifications(showNotifications))
 
-    await fs
-      .doc(`users/${uid}`)
-      .set({ settings: { showNotifications } }, { merge: true })
+    const currentSettings = localStorageAPI.getSettings() || {}
+    await localStorageAPI.saveSettings({
+      ...currentSettings,
+      showNotifications
+    })
   }
 }
 
@@ -107,15 +109,14 @@ export const setDarkMode = (darkMode) => ({
 
 export const startSetDarkMode = (darkMode) => {
   return async (dispatch, getState) => {
-    const uid = getState().auth.uid
-
     localStorage.setItem('darkMode', +darkMode)
-
     dispatch(setDarkMode(darkMode))
 
-    await fs
-      .doc(`users/${uid}`)
-      .set({ settings: { darkMode } }, { merge: true })
+    const currentSettings = localStorageAPI.getSettings() || {}
+    await localStorageAPI.saveSettings({
+      ...currentSettings,
+      darkMode
+    })
   }
 }
 
@@ -126,13 +127,13 @@ export const setAutostart = (autostart) => ({
 
 export const startSetAutostart = (autostart) => {
   return async (dispatch, getState) => {
-    const uid = getState().auth.uid
-
     dispatch(setAutostart(autostart))
 
-    await fs
-      .doc(`users/${uid}`)
-      .set({ settings: { autostart } }, { merge: true })
+    const currentSettings = localStorageAPI.getSettings() || {}
+    await localStorageAPI.saveSettings({
+      ...currentSettings,
+      autostart
+    })
   }
 }
 
@@ -143,13 +144,13 @@ export const setFirstDayOfTheWeek = (firstDayOfTheWeek) => ({
 
 export const startSetFirstDayOfTheWeek = (firstDayOfTheWeek) => {
   return async (dispatch, getState) => {
-    const uid = getState().auth.uid
-
     dispatch(setFirstDayOfTheWeek(firstDayOfTheWeek))
 
-    await fs
-      .doc(`users/${uid}`)
-      .set({ settings: { firstDayOfTheWeek } }, { merge: true })
+    const currentSettings = localStorageAPI.getSettings() || {}
+    await localStorageAPI.saveSettings({
+      ...currentSettings,
+      firstDayOfTheWeek
+    })
   }
 }
 
@@ -160,19 +161,43 @@ export const setSettings = (settings) => ({
 
 export const startSetSettings = () => {
   return async (dispatch, getState) => {
-    const uid = getState().auth.uid
-
     try {
-      const docRef = await fs.doc(`users/${uid}`).get()
-      let data = {}
-
-      if (docRef.exists) {
-        data = docRef.data().settings
+      const settings = localStorageAPI.getSettings()
+      
+      if (settings) {
+        dispatch(setSettings(settings))
+      } else {
+        // Set default settings if none exist
+        const defaultSettings = {
+          workDuration: 25,
+          shortBreakDuration: 5,
+          longBreakDuration: 20,
+          rounds: 4,
+          showTimerInTitle: false,
+          showNotifications: true,
+          darkMode: false,
+          autostart: false,
+          firstDayOfTheWeek: 0 // Sunday
+        }
+        
+        dispatch(setSettings(defaultSettings))
+        await localStorageAPI.saveSettings(defaultSettings)
       }
-
-      dispatch(setSettings(data))
-    } catch (e) {
-      dispatch(setSettings({}))
+    } catch (error) {
+      console.error('Error loading settings:', error)
+      // Load defaults on error
+      const defaultSettings = {
+        workDuration: 25,
+        shortBreakDuration: 5,
+        longBreakDuration: 20,
+        rounds: 4,
+        showTimerInTitle: false,
+        showNotifications: true,
+        darkMode: false,
+        autostart: false,
+        firstDayOfTheWeek: 0
+      }
+      dispatch(setSettings(defaultSettings))
     }
   }
 }

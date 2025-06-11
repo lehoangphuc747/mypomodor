@@ -1,4 +1,4 @@
-import fs from '../../firebase/firebase'
+import { localStorageAPI } from '../../storage/localStorage'
 
 export const setSessions = (sessions) => ({
   type: 'SET_SESSIONS',
@@ -7,19 +7,12 @@ export const setSessions = (sessions) => ({
 
 export const startSetSessions = () => {
   return async (dispatch, getState) => {
-    const uid = getState().auth.uid
-
     try {
-      const sessionsRef = await fs.collection(`users/${uid}/sessions`).get()
-
-      const sessions = sessionsRef.docs.map((session) => ({
-        id: session.id,
-        ...session.data(),
-      }))
-
+      const sessions = localStorageAPI.getSessions()
       dispatch(setSessions(sessions))
-      return sessionsRef
+      return sessions
     } catch (e) {
+      console.error('Error loading sessions:', e)
       dispatch(setSessions([]))
     }
   }
@@ -32,24 +25,20 @@ export const addSession = (session) => ({
 
 export const startAddSession = (session) => {
   return async (dispatch, getState) => {
-    const uid = getState().auth.uid
-    const { duration, label = null, createdAt } = session
-
-    const newSessionRef = fs.collection(`users/${uid}/sessions`).doc()
-
-    dispatch(
-      addSession({
-        id: newSessionRef.id,
-        ...session,
+    try {
+      const { duration, label = null, createdAt } = session
+      
+      const newSession = await localStorageAPI.saveSession({
+        duration,
+        label,
+        createdAt,
       })
-    )
 
-    await newSessionRef.set({
-      duration,
-      label,
-      createdAt,
-    })
-
-    return newSessionRef
+      dispatch(addSession(newSession))
+      return newSession
+    } catch (error) {
+      console.error('Error saving session:', error)
+      throw error
+    }
   }
 }

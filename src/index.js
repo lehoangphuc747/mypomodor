@@ -1,18 +1,20 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
-import 'typeface-roboto'
 import * as serviceWorker from './serviceWorker'
 import App from './App'
 import configureStore from './store'
 
 const store = configureStore()
+const container = document.getElementById('root')
+const root = createRoot(container)
 
-ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
+root.render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>
 )
 
 serviceWorker.register()

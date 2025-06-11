@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
-import Box from '@material-ui/core/Box'
-import IconButton from '@material-ui/core/IconButton'
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
 import styled from 'styled-components'
-import PlayArrowIcon from '@material-ui/icons/PlayArrow'
-import PauseIcon from '@material-ui/icons/Pause'
-import { useTheme } from '@material-ui/core'
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import PauseIcon from '@mui/icons-material/Pause'
+import { useTheme } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   setNextTimer,

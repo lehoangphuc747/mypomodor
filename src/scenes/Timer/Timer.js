@@ -1,5 +1,5 @@
 import React from 'react'
-import Box from '@material-ui/core/Box'
+import Box from '@mui/material/Box'
 import { CountdownCircle } from './components/CountdownCircle'
 import { ToggleButton } from './components/ToggleButton'
 import { RoundsCounter } from './components/RoundsCounter'
@@ -8,7 +8,7 @@ import { SkipButton } from './components/SkipButton'
 import { FullscreenDialog } from './components/Labels/FullscreenDialog'
 import { DesktopDialog } from './components/Labels/DesktopDialog'
 import { LabelButton } from './components/Labels/LabelButton'
-import { useMediaQuery, useTheme } from '@material-ui/core'
+import { useMediaQuery, useTheme } from '@mui/material'
 
 export const Timer = () => {
   const theme = useTheme()

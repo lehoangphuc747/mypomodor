@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { ThemeProvider } from '@material-ui/core/styles'
-import { createMuiTheme } from '@material-ui/core'
-import indigo from '@material-ui/core/colors/indigo'
-import pink from '@material-ui/core/colors/pink'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
+import { indigo, pink } from '@mui/material/colors'
 
 export const ThemeConfig = ({ children }) => {
   const darkModeCached = +localStorage.getItem('darkMode')
@@ -12,9 +10,9 @@ export const ThemeConfig = ({ children }) => {
   const darkMode = useSelector((state) => +state.settings.darkMode)
   const progress = useSelector((state) => state.progress)
 
-  const userTheme = createMuiTheme({
+  const userTheme = createTheme({
     palette: {
-      type: darkTheme ? 'dark' : 'light',
+      mode: darkTheme ? 'dark' : 'light',
       primary: {
         main: indigo[500],
         light: indigo[200],

@@ -1,9 +1,9 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import styled, { css } from 'styled-components'
-import MatAppBar from '@material-ui/core/AppBar'
-import { useTheme } from '@material-ui/core'
-import useMediaQuery from '@material-ui/core/useMediaQuery'
+import MatAppBar from '@mui/material/AppBar'
+import { useTheme } from '@mui/material'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { Toolbar } from './Toolbar'
 import { NavList } from './NavList'
 

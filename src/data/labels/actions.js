@@ -1,4 +1,4 @@
-import fs from '../../firebase/firebase'
+import { localStorageAPI } from '../../storage/localStorage'
 
 export const setFullscreenDialog = (fullscreenDialog) => ({
   type: 'SET_FULLSCREEN_DIALOG',
